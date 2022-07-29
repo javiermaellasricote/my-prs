@@ -1,7 +1,7 @@
 package status
 
 import (
-	"fmt"
+	"math"
 	"strconv"
 	"strings"
 )
@@ -25,8 +25,8 @@ func extractPRs(info, noPRsMessage string) ([]PR, error) {
 // extracting all the necessary information and filling the
 // PR objects with the appropriate data.
 func convertStrsToPRs(data []string) ([]PR, error) {
-	fmt.Printf("%#v", data)
-	prs := make([]PR, len(data)/2)
+	size := int(math.Ceil(float64(len(data)) / 2.0))
+	prs := make([]PR, size)
 	for i, item := range data {
 		idx := i / 2
 		cleanItem := strings.Trim(item, " ")
