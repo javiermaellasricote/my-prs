@@ -14,10 +14,8 @@ func GetRepos(owner string) ([]string, error) {
 	if err != nil {
 		return []string{}, err
 	}
-	infos, err := strings.Split(stdout, "\n"), nil
-	if err != nil {
-		return []string{}, err
-	}
+
+	infos := strings.Split(stdout, "\n")
 
 	names := []string{}
 	for _, info := range infos {
