@@ -1,6 +1,7 @@
 package status
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -9,7 +10,9 @@ import (
 // string. Returns error if the string passed does not
 // match the expected format.
 func extractPRs(info, noPRsMessage string) ([]PR, error) {
-	if info == noPRsMessage {
+	infoNoEOL := strings.Trim(info, "\n")
+	infoNoSpace := strings.Trim(infoNoEOL, " ")
+	if infoNoSpace == noPRsMessage {
 		return []PR{}, nil
 	}
 
@@ -22,6 +25,7 @@ func extractPRs(info, noPRsMessage string) ([]PR, error) {
 // extracting all the necessary information and filling the
 // PR objects with the appropriate data.
 func convertStrsToPRs(data []string) ([]PR, error) {
+	fmt.Printf("%#v", data)
 	prs := make([]PR, len(data)/2)
 	for i, item := range data {
 		idx := i / 2

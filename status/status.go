@@ -7,8 +7,8 @@ import (
 var (
 	yourPRsMsg     = "Created by you"
 	codeReviewMsg  = "\nRequesting a code review from you\n"
-	noReviewPRsMsg = "You have no pull requests to review\n\n"
-	noOpenedPRsMsg = "\n  You have no open pull requests\n"
+	noReviewPRsMsg = "You have no pull requests to review"
+	noOpenedPRsMsg = "You have no open pull requests"
 )
 
 type PR struct {

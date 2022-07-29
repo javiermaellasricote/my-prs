@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -14,7 +13,6 @@ func main() {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	fmt.Printf("%#v", rps)
 
 	stss := make([]status.RepoStatus, len(rps))
 	for idx, rp := range rps {
@@ -23,5 +21,4 @@ func main() {
 			log.Fatalf(err.Error())
 		}
 	}
-	fmt.Printf("%#v", stss)
 }
