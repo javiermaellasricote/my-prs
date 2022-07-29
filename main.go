@@ -14,7 +14,7 @@ func main() {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	fmt.Printf("%#v", rps)
+	fmt.Print(len(rps))
 
 }
 
