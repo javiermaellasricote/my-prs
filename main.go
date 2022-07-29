@@ -15,7 +15,8 @@ func main() {
 		}
 		fmt.Print(len(rps))
 	*/
-	rps, err := status.GetStatus("biblio-tech/content-metadata-dynamodb")
+	//rps, err := status.GetStatus("biblio-tech/content-metadata-dynamodb")
+	rps, err := status.GetStatus("biblio-tech/providers")
 	if err != nil {
 		log.Fatalf(err.Error())
 	}

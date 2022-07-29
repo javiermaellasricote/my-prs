@@ -32,7 +32,7 @@ func GetStatus(repo string) ([]PR, error) {
 // information string. Returns error if the string passed
 // does not match the expected format.
 func getOpenPRs(prInfo string) ([]PR, error) {
-	noPRsMsg := "You have no open pull requests\n"
+	noPRsMsg := "\n  You have no open pull requests\n"
 	if prInfo == noPRsMsg {
 		return []PR{}, nil
 	}
