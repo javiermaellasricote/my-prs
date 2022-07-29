@@ -11,16 +11,16 @@ type PR struct {
 	Status      string `json:"status"`
 }
 
-func GetStatus(repo string) (string, error) {
+func GetStatus(repo string) ([]PR, error) {
 	stdout, err := ghPRStatus(repo)
 	if err != nil {
-		return "", err
+		return []PR{}, err
 	}
 
 	data := strings.Split(stdout, "Created by you")[1]
 	spltData := strings.Split(data, "\nRequesting a code review from you\n")
 
-	return spltData[1], nil
+	return getReviewPRs(spltData[1])
 }
 
 // Extracts the PRs that the user has opened from the
@@ -32,6 +32,17 @@ func getOpenPRs(info string) ([]PR, error) {
 		return []PR{}, nil
 	}
 
-	data := strings.Split(info, "\n")
+	cleanInfo := strings.Trim(info, "\n")
+	data := strings.Split(cleanInfo, "\n")
+	return convertStrsToPRs(data)
+}
+
+func getReviewPRs(info string) ([]PR, error) {
+	if info == "" {
+		return []PR{}, nil
+	}
+
+	cleanInfo := strings.Trim(info, "\n")
+	data := strings.Split(cleanInfo, "\n")
 	return convertStrsToPRs(data)
 }
