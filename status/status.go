@@ -16,28 +16,35 @@ type PR struct {
 	Status      string `json:"status"`
 }
 
-func GetStatus(repo string) ([]PR, error) {
+func GetStatus(repo string) (string, error) {
 	stdout, err := ghPRStatus(repo)
 	if err != nil {
-		return []PR{}, err
+		return "", err
 	}
 
 	data := strings.Split(stdout, "Created by you")[1]
 	spltData := strings.Split(data, "\nRequesting a code review from you\n")
 
-	return getOpenPRs(spltData[0])
+	return spltData[1], nil
 }
 
 // Extracts the PRs that the user has opened from the
 // information string. Returns error if the string passed
 // does not match the expected format.
-func getOpenPRs(prInfo string) ([]PR, error) {
+func getOpenPRs(info string) ([]PR, error) {
 	noPRsMsg := "\n  You have no open pull requests\n"
-	if prInfo == noPRsMsg {
+	if info == noPRsMsg {
 		return []PR{}, nil
 	}
-	data := strings.Split(prInfo, "\n")
 
+	data := strings.Split(info, "\n")
+	return convertStrsToPRs(data)
+}
+
+// Converts a slice of strings into a slice of PR objects,
+// extracting all the necessary information and filling the
+// PR objects with the appropriate data.
+func convertStrsToPRs(data []string) ([]PR, error) {
 	prs := make([]PR, len(data)/4)
 	for i, item := range data {
 		idx := i / 4
@@ -46,6 +53,7 @@ func getOpenPRs(prInfo string) ([]PR, error) {
 		switch i % 4 {
 		case 0:
 			continue
+
 		case 1:
 			fmt.Println(cleanItem)
 			split1 := strings.Split(cleanItem, "#")[1]
@@ -58,10 +66,13 @@ func getOpenPRs(prInfo string) ([]PR, error) {
 			prs[idx].ID = id
 			prs[idx].Description = split3[0]
 			prs[idx].Name = strings.Trim(split3[1], "]")
+
 		case 2:
 			prs[idx].Status = cleanItem
+
 		case 3:
 			continue
+
 		default:
 			err := errors.New("More items than expected")
 			return []PR{}, err
