@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 
@@ -21,4 +23,11 @@ func main() {
 			log.Fatalf(err.Error())
 		}
 	}
+
+	jsonStss, err := json.MarshalIndent(stss, "", "  ")
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	fmt.Print(string(jsonStss))
 }
