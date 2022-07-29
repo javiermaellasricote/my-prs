@@ -3,22 +3,25 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
+	"github.com/javiermaellasricote/my-prs/repos"
 	"github.com/javiermaellasricote/my-prs/status"
 )
 
 func main() {
-	/*
-		rps, err := repos.GetRepos("biblio-tech")
-		if err != nil {
-			log.Fatalf(err.Error())
-		}
-		fmt.Print(len(rps))
-	*/
-	rps, err := status.GetStatus("biblio-tech/content-metadata-dynamodb")
-	//rps, err := status.GetStatus("biblio-tech/providers")
+	rps, err := repos.GetRepos(os.Args[1])
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 	fmt.Printf("%#v", rps)
+
+	stss := make([]status.RepoStatus, len(rps))
+	for idx, rp := range rps {
+		stss[idx], err = status.GetRepoStatus(rp)
+		if err != nil {
+			log.Fatalf(err.Error())
+		}
+	}
+	fmt.Printf("%#v", stss)
 }
