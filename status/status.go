@@ -28,6 +28,9 @@ func GetStatus(repo string) ([]PR, error) {
 	return getOpenPRs(spltData[0])
 }
 
+// Extracts the PRs that the user has opened from the
+// information string. Returns error if the string passed
+// does not match the expected format.
 func getOpenPRs(prInfo string) ([]PR, error) {
 	noPRsMsg := "You have no open pull requests\n"
 	if prInfo == noPRsMsg {
