@@ -5,6 +5,19 @@ import (
 	"strings"
 )
 
+// Extracts the PRs for the user from the information
+// string. Returns error if the string passed does not
+// match the expected format.
+func extractPRs(info, noPRsMessage string) ([]PR, error) {
+	if info == noPRsMessage {
+		return []PR{}, nil
+	}
+
+	cleanInfo := strings.Trim(info, "\n")
+	data := strings.Split(cleanInfo, "\n")
+	return convertStrsToPRs(data)
+}
+
 // Converts a slice of strings into a slice of PR objects,
 // extracting all the necessary information and filling the
 // PR objects with the appropriate data.

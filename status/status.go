@@ -11,38 +11,39 @@ type PR struct {
 	Status      string `json:"status"`
 }
 
-func GetStatus(repo string) ([]PR, error) {
+type RepoStatus struct {
+	Name      string `json:"name"`
+	OpenedPRs []PR   `json:"opened_prs"`
+	ReviewPRs []PR   `json:"review_prs"`
+}
+
+var (
+	noReviewPRs = "You have no pull requests to review\n\n"
+	noOpenedPRs = "\n  You have no open pull requests\n"
+)
+
+func GetStatus(repo string) (RepoStatus, error) {
 	stdout, err := ghPRStatus(repo)
 	if err != nil {
-		return []PR{}, err
+		return RepoStatus{}, err
 	}
 
-	data := strings.Split(stdout, "Created by you")[1]
-	spltData := strings.Split(data, "\nRequesting a code review from you\n")
+	info := strings.Split(stdout, "Created by you")[1]
+	infos := strings.Split(info, "\nRequesting a code review from you\n")
 
-	return getReviewPRs(spltData[1])
-}
-
-// Extracts the PRs that the user has opened from the
-// information string. Returns error if the string passed
-// does not match the expected format.
-func getOpenPRs(info string) ([]PR, error) {
-	noPRsMsg := "\n  You have no open pull requests\n"
-	if info == noPRsMsg {
-		return []PR{}, nil
+	oPRs, err := extractPRs(infos[0], noOpenedPRs)
+	if err != nil {
+		return RepoStatus{}, err
 	}
 
-	cleanInfo := strings.Trim(info, "\n")
-	data := strings.Split(cleanInfo, "\n")
-	return convertStrsToPRs(data)
-}
-
-func getReviewPRs(info string) ([]PR, error) {
-	if info == "" {
-		return []PR{}, nil
+	rPRs, err := extractPRs(infos[1], noReviewPRs)
+	if err != nil {
+		return RepoStatus{}, err
 	}
 
-	cleanInfo := strings.Trim(info, "\n")
-	data := strings.Split(cleanInfo, "\n")
-	return convertStrsToPRs(data)
+	return RepoStatus{
+		Name:      repo,
+		OpenedPRs: oPRs,
+		ReviewPRs: rPRs,
+	}, nil
 }
