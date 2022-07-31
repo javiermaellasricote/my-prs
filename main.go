@@ -16,11 +16,15 @@ func main() {
 		log.Fatalf(err.Error())
 	}
 
-	stss := make([]status.RepoStatus, len(rps))
-	for idx, rp := range rps {
-		stss[idx], err = status.GetRepoStatus(rp)
+	stss := []status.RepoStatus{}
+	for _, rp := range rps {
+		sts, err := status.GetRepoStatus(rp)
 		if err != nil {
 			log.Fatalf(err.Error())
+		}
+
+		if len(sts.OpenedPRs) != 0 || len(sts.ReviewPRs) != 0 {
+			stss = append(stss, sts)
 		}
 	}
 

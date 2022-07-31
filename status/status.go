@@ -14,14 +14,14 @@ var (
 type PR struct {
 	ID          int    `json:"id"`
 	Name        string `json:"name"`
+	Repo        string `json:"repository"`
 	Description string `json:"description"`
 	Status      string `json:"status"`
 }
 
 type RepoStatus struct {
-	Name      string `json:"name"`
-	OpenedPRs []PR   `json:"opened_prs"`
-	ReviewPRs []PR   `json:"review_prs"`
+	OpenedPRs []PR `json:"opened_prs"`
+	ReviewPRs []PR `json:"review_prs"`
 }
 
 // Retrieves the status for all the PRs in the repo
@@ -37,18 +37,17 @@ func GetRepoStatus(repo string) (RepoStatus, error) {
 	info := strings.Split(stdout, yourPRsMsg)[1]
 	infos := strings.Split(info, codeReviewMsg)
 
-	oPRs, err := extractPRs(infos[0], noOpenedPRsMsg)
+	oPRs, err := extractPRs(infos[0], noOpenedPRsMsg, repo)
 	if err != nil {
 		return RepoStatus{}, err
 	}
 
-	rPRs, err := extractPRs(infos[1], noReviewPRsMsg)
+	rPRs, err := extractPRs(infos[1], noReviewPRsMsg, repo)
 	if err != nil {
 		return RepoStatus{}, err
 	}
 
 	return RepoStatus{
-		Name:      repo,
 		OpenedPRs: oPRs,
 		ReviewPRs: rPRs,
 	}, nil
