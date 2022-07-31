@@ -30,7 +30,7 @@ type RepoStatus struct {
 // related to the user making the request. Returns
 // error if the statuses cannot be retrieved or parsed
 // successfully.
-func GetRepoStatus(repo string, stsChan chan RepoStatus, wg sync.WaitGroup) {
+func GetRepoStatus(repo string, stsChan chan RepoStatus, wg *sync.WaitGroup) {
 	wg.Add(1)
 	defer wg.Done()
 
