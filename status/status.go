@@ -25,7 +25,22 @@ type RepoStatus struct {
 	Err       error `json:"-"`
 }
 
-func StoreRepoStatus(stsChan chan RepoStatus) ([]RepoStatus, error) {
+func GetStatus(rps []string) ([]RepoStatus, error) {
+	stsChan := make(chan RepoStatus)
+	go executeRoutines(rps, stsChan)
+	return retrieveResponse(stsChan)
+}
+
+func executeRoutines(rps []string, stsChan chan RepoStatus) {
+	wg := sync.WaitGroup{}
+	for _, rp := range rps {
+		go getStatusRoutine(rp, stsChan, &wg)
+	}
+	wg.Wait()
+	close(stsChan)
+}
+
+func retrieveResponse(stsChan chan RepoStatus) ([]RepoStatus, error) {
 	stss := []RepoStatus{}
 	for sts := range stsChan {
 		if sts.Err != nil {
@@ -37,13 +52,4 @@ func StoreRepoStatus(stsChan chan RepoStatus) ([]RepoStatus, error) {
 		}
 	}
 	return stss, nil
-}
-
-func GetRepoStatus(rps []string, stsChan chan RepoStatus) {
-	wg := sync.WaitGroup{}
-	for _, rp := range rps {
-		go execGetStatus(rp, stsChan, &wg)
-	}
-	wg.Wait()
-	close(stsChan)
 }

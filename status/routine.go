@@ -11,7 +11,7 @@ import (
 // related to the user making the request. Returns
 // error if the statuses cannot be retrieved or parsed
 // successfully.
-func execGetStatus(repo string, stsChan chan RepoStatus, wg *sync.WaitGroup) {
+func getStatusRoutine(repo string, stsChan chan RepoStatus, wg *sync.WaitGroup) {
 	wg.Add(1)
 	defer wg.Done()
 
