@@ -1,7 +1,6 @@
 package status
 
 import (
-	"strings"
 	"sync"
 )
 
@@ -26,34 +25,25 @@ type RepoStatus struct {
 	Err       error `json:"-"`
 }
 
-// Retrieves the status for all the PRs in the repo
-// related to the user making the request. Returns
-// error if the statuses cannot be retrieved or parsed
-// successfully.
-func GetRepoStatus(repo string, stsChan chan RepoStatus, wg *sync.WaitGroup) {
-	wg.Add(1)
-	defer wg.Done()
+func StoreRepoStatus(stsChan chan RepoStatus) ([]RepoStatus, error) {
+	stss := []RepoStatus{}
+	for sts := range stsChan {
+		if sts.Err != nil {
+			return []RepoStatus{}, sts.Err
+		}
 
-	stdout, err := ghPRStatus(repo)
-	if err != nil {
-		stsChan <- RepoStatus{Err: err}
+		if len(sts.OpenedPRs) != 0 || len(sts.ReviewPRs) != 0 {
+			stss = append(stss, sts)
+		}
 	}
+	return stss, nil
+}
 
-	info := strings.Split(stdout, yourPRsMsg)[1]
-	infos := strings.Split(info, codeReviewMsg)
-
-	oPRs, err := extractPRs(infos[0], noOpenedPRsMsg, repo)
-	if err != nil {
-		stsChan <- RepoStatus{Err: err}
+func GetRepoStatus(rps []string, stsChan chan RepoStatus) {
+	wg := sync.WaitGroup{}
+	for _, rp := range rps {
+		go execGetStatus(rp, stsChan, &wg)
 	}
-
-	rPRs, err := extractPRs(infos[1], noReviewPRsMsg, repo)
-	if err != nil {
-		stsChan <- RepoStatus{Err: err}
-	}
-
-	stsChan <- RepoStatus{
-		OpenedPRs: oPRs,
-		ReviewPRs: rPRs,
-	}
+	wg.Wait()
+	close(stsChan)
 }
