@@ -7,6 +7,13 @@ import (
 	"sync"
 )
 
+var (
+	yourPRsMsg     = "Created by you"
+	codeReviewMsg  = "\nRequesting a code review from you\n"
+	noReviewPRsMsg = "You have no pull requests to review"
+	noOpenedPRsMsg = "You have no open pull requests"
+)
+
 // Retrieves the status for all the PRs in the repo
 // related to the user making the request. Returns
 // error if the statuses cannot be retrieved or parsed

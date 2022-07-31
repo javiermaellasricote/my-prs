@@ -4,13 +4,6 @@ import (
 	"sync"
 )
 
-var (
-	yourPRsMsg     = "Created by you"
-	codeReviewMsg  = "\nRequesting a code review from you\n"
-	noReviewPRsMsg = "You have no pull requests to review"
-	noOpenedPRsMsg = "You have no open pull requests"
-)
-
 type PR struct {
 	ID          int    `json:"id"`
 	Name        string `json:"name"`
