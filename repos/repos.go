@@ -10,7 +10,7 @@ import (
 // names belonging to an owner. The owner can be an individual
 // or a project.
 func GetRepos(owner string) ([]string, error) {
-	stdout, err := ghSearchRepos(owner)
+	stdout, err := ghRepoList(owner)
 	if err != nil {
 		return []string{}, err
 	}
@@ -29,7 +29,7 @@ func GetRepos(owner string) ([]string, error) {
 // to a specific owner (it can be an individual or a project).
 // Returns the standard output from the command and an error
 // if the command could not be run successfully.
-func ghSearchRepos(owner string) (string, error) {
+func ghRepoList(owner string) (string, error) {
 	cmd := exec.Command("gh", "repo", "list", owner)
 	stdout := bytes.Buffer{}
 	cmd.Stdout = &stdout
