@@ -25,21 +25,30 @@ type RepoStatus struct {
 	Err       error `json:"-"`
 }
 
+// Gets the status for each repo name passed as an argument.
+// Returns error if the status of any of the repos could not
+// be retrieved.
 func GetStatus(rps []string) ([]RepoStatus, error) {
 	stsChan := make(chan RepoStatus)
 	go executeRoutines(rps, stsChan)
 	return retrieveResponse(stsChan)
 }
 
+// Executes the go routines that get the status for the different
+// repos. This function should be executed as a go routine so it
+// doesn't block the main thread.
 func executeRoutines(rps []string, stsChan chan RepoStatus) {
+	defer close(stsChan)
 	wg := sync.WaitGroup{}
 	for _, rp := range rps {
 		go getStatusRoutine(rp, stsChan, &wg)
 	}
 	wg.Wait()
-	close(stsChan)
 }
 
+// Retrieves the response from the RepoStatus channel and returns the
+// status obtained as a RepoStatus slice. It returns an error if the
+// channel response contains one.
 func retrieveResponse(stsChan chan RepoStatus) ([]RepoStatus, error) {
 	stss := []RepoStatus{}
 	for sts := range stsChan {
