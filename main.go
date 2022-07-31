@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync"
 
 	"github.com/javiermaellasricote/my-prs/repos"
 	"github.com/javiermaellasricote/my-prs/status"
@@ -16,11 +17,18 @@ func main() {
 		log.Fatalf(err.Error())
 	}
 
-	stss := []status.RepoStatus{}
+	wg := sync.WaitGroup{}
+	stsChan := make(chan status.RepoStatus)
 	for _, rp := range rps {
-		sts, err := status.GetRepoStatus(rp)
-		if err != nil {
-			log.Fatalf(err.Error())
+		go status.GetRepoStatus(rp, stsChan, wg)
+		wg.Wait()
+		close(stsChan)
+	}
+
+	stss := []status.RepoStatus{}
+	for sts := range stsChan {
+		if sts.Err != nil {
+			log.Fatalf(sts.Err.Error())
 		}
 
 		if len(sts.OpenedPRs) != 0 || len(sts.ReviewPRs) != 0 {

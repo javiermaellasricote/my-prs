@@ -2,6 +2,7 @@ package status
 
 import (
 	"strings"
+	"sync"
 )
 
 var (
@@ -20,18 +21,22 @@ type PR struct {
 }
 
 type RepoStatus struct {
-	OpenedPRs []PR `json:"opened_prs"`
-	ReviewPRs []PR `json:"review_prs"`
+	OpenedPRs []PR  `json:"opened_prs"`
+	ReviewPRs []PR  `json:"review_prs"`
+	Err       error `json:"-"`
 }
 
 // Retrieves the status for all the PRs in the repo
 // related to the user making the request. Returns
 // error if the statuses cannot be retrieved or parsed
 // successfully.
-func GetRepoStatus(repo string) (RepoStatus, error) {
+func GetRepoStatus(repo string, stsChan chan RepoStatus, wg sync.WaitGroup) {
+	wg.Add(1)
+	defer wg.Done()
+
 	stdout, err := ghPRStatus(repo)
 	if err != nil {
-		return RepoStatus{}, err
+		stsChan <- RepoStatus{Err: err}
 	}
 
 	info := strings.Split(stdout, yourPRsMsg)[1]
@@ -39,16 +44,16 @@ func GetRepoStatus(repo string) (RepoStatus, error) {
 
 	oPRs, err := extractPRs(infos[0], noOpenedPRsMsg, repo)
 	if err != nil {
-		return RepoStatus{}, err
+		stsChan <- RepoStatus{Err: err}
 	}
 
 	rPRs, err := extractPRs(infos[1], noReviewPRsMsg, repo)
 	if err != nil {
-		return RepoStatus{}, err
+		stsChan <- RepoStatus{Err: err}
 	}
 
-	return RepoStatus{
+	stsChan <- RepoStatus{
 		OpenedPRs: oPRs,
 		ReviewPRs: rPRs,
-	}, nil
+	}
 }
