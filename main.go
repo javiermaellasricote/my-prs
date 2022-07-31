@@ -16,7 +16,7 @@ func main() {
 		log.Fatalf(err.Error())
 	}
 
-	stss, err := status.GetStatuses(rps)
+	stss, err := status.GetStatus(rps)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
