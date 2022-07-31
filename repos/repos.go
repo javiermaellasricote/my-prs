@@ -30,7 +30,7 @@ func GetRepos(owner string) ([]string, error) {
 // Returns the standard output from the command and an error
 // if the command could not be run successfully.
 func ghSearchRepos(owner string) (string, error) {
-	cmd := exec.Command("gh", "search", "repos", "--owner", owner, "--limit", "1000")
+	cmd := exec.Command("gh", "repo", "list", owner)
 	stdout := bytes.Buffer{}
 	cmd.Stdout = &stdout
 
