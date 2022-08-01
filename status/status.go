@@ -6,7 +6,7 @@ import (
 
 type PR struct {
 	ID          int    `json:"id"`
-	Name        string `json:"name"`
+	Branch      string `json:"branch"`
 	Repo        string `json:"repository"`
 	Description string `json:"description"`
 	Status      string `json:"status"`

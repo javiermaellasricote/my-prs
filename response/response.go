@@ -23,6 +23,6 @@ func PrintResponse(stss []status.RepoStatus) {
 
 func printPRs(prs []status.PR) {
 	for _, pr := range prs {
-		fmt.Printf("PR: %v\tRepo: %v\n", pr.Name, pr.Repo)
+		fmt.Printf("PR: %v\tRepo: %v\n", pr.Branch, pr.Repo)
 	}
 }

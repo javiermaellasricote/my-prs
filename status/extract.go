@@ -42,7 +42,7 @@ func convertStrsToPRs(data []string, repo string) ([]PR, error) {
 			}
 			prs[idx].ID = id
 			prs[idx].Description = split3[0]
-			prs[idx].Name = strings.Trim(split3[1], "]")
+			prs[idx].Branch = strings.Trim(split3[1], "]")
 			prs[idx].Repo = repo
 
 		case 1:
