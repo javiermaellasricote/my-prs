@@ -3,14 +3,15 @@ package repos
 import (
 	"bytes"
 	"os/exec"
+	"strconv"
 	"strings"
 )
 
 // Retrieves a slice of strings with all the GitHub repo
 // names belonging to an owner. The owner can be an individual
 // or a project.
-func GetRepos(owner string) ([]string, error) {
-	stdout, err := ghRepoList(owner)
+func GetRepos(owner string, repoLimit int) ([]string, error) {
+	stdout, err := ghRepoList(owner, repoLimit)
 	if err != nil {
 		return []string{}, err
 	}
@@ -29,8 +30,9 @@ func GetRepos(owner string) ([]string, error) {
 // to a specific owner (it can be an individual or a project).
 // Returns the standard output from the command and an error
 // if the command could not be run successfully.
-func ghRepoList(owner string) (string, error) {
-	cmd := exec.Command("gh", "repo", "list", owner)
+func ghRepoList(owner string, repoLimit int) (string, error) {
+	lmtStr := strconv.Itoa(repoLimit)
+	cmd := exec.Command("gh", "repo", "list", "--limit", lmtStr, owner)
 	stdout := bytes.Buffer{}
 	cmd.Stdout = &stdout
 
