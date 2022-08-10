@@ -14,10 +14,9 @@ var (
 	noOpenedPRsMsg = "You have no open pull requests"
 )
 
-// Retrieves the status for all the PRs in the repo
-// related to the user making the request. Returns
-// error if the statuses cannot be retrieved or parsed
-// successfully.
+// Retrieves the status for all the PRs related to the user making the request
+// for the specified repo. Returns error if the statuses cannot be retrieved
+// or parsed successfully.
 func getStatusRoutine(repo string, stsChan chan RepoStatus, wg *sync.WaitGroup) {
 	wg.Add(1)
 	defer wg.Done()

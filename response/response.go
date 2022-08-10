@@ -16,6 +16,9 @@ var (
 	purple     = "\033[35m"
 )
 
+// Prints the CLI response to the console, separating between
+// opened PRs (opened by the user running the command), and
+// PRs for review (they are waiting for the user to add a review).
 func PrintResponse(stss []status.RepoStatus) {
 	oPRs := []status.PR{}
 	rPRs := []status.PR{}
@@ -33,6 +36,8 @@ func PrintResponse(stss []status.RepoStatus) {
 	printPRs(rPRs)
 }
 
+// Prints PR information with the correct formatting and colors
+// to the console.
 func printPRs(prs []status.PR) {
 	for _, pr := range prs {
 		ghLink := "https://github.com/" + pr.Repo + "/pull/" + strconv.Itoa(pr.ID)

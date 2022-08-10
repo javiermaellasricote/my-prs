@@ -7,9 +7,8 @@ import (
 	"strings"
 )
 
-// Retrieves a slice of strings with all the GitHub repo
-// names belonging to an owner. The owner can be an individual
-// or a project.
+// Retrieves a slice of strings with all the GitHub repo names
+//belonging to an owner. The owner can be an individual or a project.
 func GetRepos(owner string, repoLimit int) ([]string, error) {
 	stdout, err := ghRepoList(owner, repoLimit)
 	if err != nil {
