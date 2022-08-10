@@ -21,7 +21,9 @@ func GetRepos(owner string, repoLimit int) ([]string, error) {
 	names := []string{}
 	for _, info := range infos {
 		name := strings.Split(info, "\t")[0]
-		names = append(names, name)
+		if name != "" {
+			names = append(names, name)
+		}
 	}
 	return names, nil
 }
