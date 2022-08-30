@@ -7,6 +7,8 @@ import (
 	"strings"
 )
 
+var newCommand = exec.Command
+
 // Retrieves a slice of strings with all the GitHub repo names
 //belonging to an owner. The owner can be an individual or a project.
 func GetRepos(owner string, repoLimit int) ([]string, error) {
@@ -33,7 +35,7 @@ func GetRepos(owner string, repoLimit int) ([]string, error) {
 // if the command could not be run successfully.
 func ghRepoList(owner string, repoLimit int) (string, error) {
 	lmtStr := strconv.Itoa(repoLimit)
-	cmd := exec.Command("gh", "repo", "list", "--limit", lmtStr, owner)
+	cmd := newCommand("gh", "repo", "list", "--limit", lmtStr, owner)
 	stdout := bytes.Buffer{}
 	cmd.Stdout = &stdout
 
