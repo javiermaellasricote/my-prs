@@ -7,6 +7,8 @@ import (
 	"github.com/javiermaellasricote/my-prs/status"
 )
 
+var printF = fmt.Printf
+
 var (
 	colorReset = "\033[0m"
 	green      = "\033[32m"
@@ -27,12 +29,12 @@ func PrintResponse(stss []status.RepoStatus) {
 		rPRs = append(rPRs, sts.ReviewPRs...)
 	}
 
-	fmt.Printf(string(red) + "\nOPENED PRs:\n")
-	fmt.Printf(string(colorReset))
+	printF(string(red) + "\nOPENED PRs:\n")
+	printF(string(colorReset))
 	printPRs(oPRs)
 
-	fmt.Printf(string(red) + "\nWAITING FOR REVIEW:\n" + string(colorReset))
-	fmt.Printf(string(colorReset))
+	printF(string(red) + "\nWAITING FOR REVIEW:\n" + string(colorReset))
+	printF(string(colorReset))
 	printPRs(rPRs)
 }
 
@@ -41,9 +43,9 @@ func PrintResponse(stss []status.RepoStatus) {
 func printPRs(prs []status.PR) {
 	for _, pr := range prs {
 		ghLink := "https://github.com/" + pr.Repo + "/pull/" + strconv.Itoa(pr.ID)
-		fmt.Printf(string(yellow)+"  [%v]:", pr.Repo)
-		fmt.Printf(string(colorReset)+" %v\n\t%v", pr.Branch, pr.Status)
-		fmt.Printf(string(blue)+" %v\n\n", ghLink)
-		fmt.Printf(string(colorReset))
+		printF(string(yellow)+"  [%v]:", pr.Repo)
+		printF(string(colorReset)+" %v\n\t%v", pr.Branch, pr.Status)
+		printF(string(blue)+" %v\n\n", ghLink)
+		printF(string(colorReset))
 	}
 }
