@@ -7,6 +7,8 @@ import (
 	"sync"
 )
 
+var newCommand = exec.Command
+
 var (
 	yourPRsMsg     = "Created by you"
 	codeReviewMsg  = "\nRequesting a code review from you\n"
@@ -51,7 +53,7 @@ func getStatusRoutine(repo string, stsChan chan RepoStatus, wg *sync.WaitGroup) 
 // Returns the standard output from the command and an error
 // if the command could not be run successfully.
 func ghPRStatus(repo string) (string, error) {
-	cmd := exec.Command("gh", "pr", "--repo", repo, "status")
+	cmd := newCommand("gh", "pr", "--repo", repo, "status")
 	stdout := bytes.Buffer{}
 	cmd.Stdout = &stdout
 
