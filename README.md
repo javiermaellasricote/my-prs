@@ -1,4 +1,4 @@
-# My PRs
+# PR Tracker
 Track all the PRs from a GitHub project that are relevant to you with a single command.
 
 ## Installation:
