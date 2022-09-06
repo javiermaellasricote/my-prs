@@ -16,16 +16,22 @@ var (
 	noOpenedPRsMsg = "You have no open pull requests"
 )
 
+type statusChan struct {
+	openedPRs []PR
+	reviewPRs []PR
+	err       error
+}
+
 // Retrieves the status for all the PRs related to the user making the request
 // for the specified repo. Returns error if the statuses cannot be retrieved
 // or parsed successfully.
-func getStatusRoutine(repo string, stsChan chan RepoStatus, wg *sync.WaitGroup) {
+func getStatusRoutine(repo string, stsChan chan statusChan, wg *sync.WaitGroup) {
 	wg.Add(1)
 	defer wg.Done()
 
 	stdout, err := ghPRStatus(repo)
 	if err != nil {
-		stsChan <- RepoStatus{Err: err}
+		stsChan <- statusChan{err: err}
 	}
 
 	info := strings.Split(stdout, yourPRsMsg)[1]
@@ -33,17 +39,17 @@ func getStatusRoutine(repo string, stsChan chan RepoStatus, wg *sync.WaitGroup) 
 
 	oPRs, err := extractPRs(infos[0], noOpenedPRsMsg, repo)
 	if err != nil {
-		stsChan <- RepoStatus{Err: err}
+		stsChan <- statusChan{err: err}
 	}
 
 	rPRs, err := extractPRs(infos[1], noReviewPRsMsg, repo)
 	if err != nil {
-		stsChan <- RepoStatus{Err: err}
+		stsChan <- statusChan{err: err}
 	}
 
-	stsChan <- RepoStatus{
-		OpenedPRs: oPRs,
-		ReviewPRs: rPRs,
+	stsChan <- statusChan{
+		openedPRs: oPRs,
+		reviewPRs: rPRs,
 	}
 }
 
