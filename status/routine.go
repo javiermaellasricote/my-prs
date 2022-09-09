@@ -26,7 +26,6 @@ type statusChan struct {
 // for the specified repo. Returns error if the statuses cannot be retrieved
 // or parsed successfully.
 func getStatusRoutine(repo string, stsChan chan statusChan, wg *sync.WaitGroup) {
-	wg.Add(1)
 	defer wg.Done()
 
 	stdout, err := ghPRStatus(repo)

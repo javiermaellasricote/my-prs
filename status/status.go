@@ -33,6 +33,7 @@ func executeRoutines(rps []string, stsChan chan statusChan) {
 	defer close(stsChan)
 	wg := sync.WaitGroup{}
 	for _, rp := range rps {
+		wg.Add(1)
 		go getStatusRoutine(rp, stsChan, &wg)
 	}
 	wg.Wait()
